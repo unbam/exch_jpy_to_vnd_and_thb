@@ -1,16 +1,29 @@
 # exch_jpy_to_vnd_and_thb
 
-A new Flutter project.
+This project is an application to convert JPY to VND and THB.
 
-## Getting Started
+## APIKEY
 
-This project is a starting point for a Flutter application.
+exchange_provider.dart
 
-A few resources to get you started if this is your first Flutter project:
+```dart
+final exchangeProvider = Provider<ExchangeRepository>(
+  (ref) => ExchangeRepository(
+    ref.watch(apiClientProvider),
+    'APIKEY',
+  ),
+);
+```
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Link
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```zsh
+cd firebase/public
+ln -s ../../build/web/* ./
+```
+
+## Deploy
+
+```zsh
+firebase deploy --only hosting
+```
