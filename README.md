@@ -22,8 +22,16 @@ cd firebase/public
 ln -s ../../build/web/* ./
 ```
 
+## Build
+
+```zsh
+fvm flutter build web --web-renderer html   
+```
+
 ## Deploy
 
 ```zsh
+firebase login
+firebase projects:list
 firebase deploy --only hosting
 ```

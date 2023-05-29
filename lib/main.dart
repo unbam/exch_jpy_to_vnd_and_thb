@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:number_to_words_english/number_to_words_english.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'currency_type.dart';
@@ -44,6 +45,9 @@ class MyHomePage extends HookConsumerWidget {
     final toJPY = useState<double>(0);
     final toVND = useState<double>(0);
     final toTHB = useState<double>(0);
+    final toJPYEng = useState<String>('');
+    final toVNDEng = useState<String>('');
+    final toTHBEng = useState<String>('');
     final processing = useState<bool>(false);
 
     return Scaffold(
@@ -96,6 +100,31 @@ class MyHomePage extends HookConsumerWidget {
             const SizedBox(
               height: 20,
             ),
+            Wrap(
+              children: [
+                price(100, (value) {
+                  currencyController.text = value.toString();
+                }),
+                price(1000, (value) {
+                  currencyController.text = value.toString();
+                }),
+                price(10000, (value) {
+                  currencyController.text = value.toString();
+                }),
+                price(100000, (value) {
+                  currencyController.text = value.toString();
+                }),
+                price(1000000, (value) {
+                  currencyController.text = value.toString();
+                }),
+                price(0, (value) {
+                  currencyController.text = value.toString();
+                }),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             ElevatedButton(
               onPressed: !processing.value
                   ? () async {
@@ -120,6 +149,11 @@ class MyHomePage extends HookConsumerWidget {
                         toVND.value = resultVND.result;
                         toTHB.value = resultTHB.result;
                         toJPY.value = 0;
+                        toVNDEng.value =
+                            NumberToWordsEnglish.convert(toVND.value.round());
+                        toTHBEng.value =
+                            NumberToWordsEnglish.convert(toTHB.value.round());
+                        toJPYEng.value = '';
                       } else {
                         final resultJPY = await exchange.convert(
                           amount: amount,
@@ -129,6 +163,10 @@ class MyHomePage extends HookConsumerWidget {
                         toJPY.value = resultJPY.result;
                         toVND.value = 0;
                         toTHB.value = 0;
+                        toJPYEng.value =
+                            NumberToWordsEnglish.convert(toJPY.value.round());
+                        toVNDEng.value = '';
+                        toTHBEng.value = '';
                       }
 
                       processing.value = false;
@@ -157,14 +195,22 @@ class MyHomePage extends HookConsumerWidget {
               height: 20,
             ),
             SizedBox(
-              width: 150,
+              width: 200,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       const Text('VND:'),
                       SelectableText(toVND.value.toString()),
+                      const SizedBox(
+                        width: 20,
+                      ),
                     ],
+                  ),
+                  Text(toVNDEng.value),
+                  const SizedBox(
+                    height: 20,
                   ),
                   Row(
                     children: [
@@ -172,16 +218,33 @@ class MyHomePage extends HookConsumerWidget {
                       SelectableText(toTHB.value.toString()),
                     ],
                   ),
+                  Text(toTHBEng.value),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     children: [
                       const Text('JPY:'),
                       SelectableText(toJPY.value.toString()),
                     ],
                   ),
+                  Text(toJPYEng.value),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget price(int price, Function(int) onTap) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: GestureDetector(
+        onTap: () => onTap(price),
+        child: Chip(
+          label: price == 0 ? const Text('Clear') : Text('$price'),
         ),
       ),
     );
