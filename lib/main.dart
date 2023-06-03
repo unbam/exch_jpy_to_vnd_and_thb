@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:number_to_words_english/number_to_words_english.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'currency_type.dart';
 import 'exchange_provider.dart';
+
+final formatter = NumberFormat('#,###.##');
 
 void main() {
   setPathUrlStrategy();
@@ -37,6 +40,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends HookConsumerWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final exchange = ref.watch(exchangeProvider);
@@ -62,21 +66,21 @@ class MyHomePage extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 60,
+                  width: 85,
                   child: DropdownButton(
                     value: currencyType.value,
                     items: const [
                       DropdownMenuItem(
                         value: CurrencyType.jpy,
-                        child: Text('JPY'),
+                        child: Text('🇯🇵JPY'),
                       ),
                       DropdownMenuItem(
                         value: CurrencyType.vnd,
-                        child: Text('VND'),
+                        child: Text('🇻🇳VND'),
                       ),
                       DropdownMenuItem(
                         value: CurrencyType.thb,
-                        child: Text('THB'),
+                        child: Text('🇹🇭THB'),
                       ),
                     ],
                     onChanged: (CurrencyType? value) {
@@ -201,8 +205,8 @@ class MyHomePage extends HookConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      const Text('VND:'),
-                      SelectableText(toVND.value.toString()),
+                      const Text('🇻🇳VND:'),
+                      SelectableText(formatter.format(toVND.value)),
                       const SizedBox(
                         width: 20,
                       ),
@@ -214,8 +218,8 @@ class MyHomePage extends HookConsumerWidget {
                   ),
                   Row(
                     children: [
-                      const Text('THB:'),
-                      SelectableText(toTHB.value.toString()),
+                      const Text('🇹🇭THB:'),
+                      SelectableText(formatter.format(toTHB.value)),
                     ],
                   ),
                   Text(toTHBEng.value),
@@ -224,8 +228,8 @@ class MyHomePage extends HookConsumerWidget {
                   ),
                   Row(
                     children: [
-                      const Text('JPY:'),
-                      SelectableText(toJPY.value.toString()),
+                      const Text('🇯🇵JPY:'),
+                      SelectableText(formatter.format(toJPY.value)),
                     ],
                   ),
                   Text(toJPYEng.value),
